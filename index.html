@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificar IPs Repetidos</title>
+  <style>
+    /* Reset básico */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #007bff;
+    }
+    p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    textarea {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      font-size: 14px;
+      color: #333;
+      resize: none;
+      height: 150px;
+      margin-bottom: 20px;
+    }
+    button {
+      width: 100%;
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      background: #f4f4f4;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      white-space: pre-wrap;
+      color: #333;
+    }
+    .result.empty {
+      text-align: center;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Verificar IPs Repetidos</h1>
+    <p>Cole os IPs no formato <code>IP:porta:senha:senha</code>, um por linha:</p>
+    <textarea id="ipInput" placeholder="Exemplo:&#10;91.123.11.95:6361:senha:senha&#10;192.168.0.1:8080:user:pass"></textarea>
+    <button onclick="checkDuplicates()">Verificar Repetidos</button>
+    <div id="result" class="result empty">Nenhum resultado ainda.</div>
+  </div>
+
+  <script>
+    function checkDuplicates() {
+      const input = document.getElementById('ipInput').value;
+      const lines = input.split('\n').map(line => line.trim()).filter(line => line); // Remove linhas vazias
+      const ips = lines.map(line => line.split(':')[0]); // Extrai apenas o IP (antes do primeiro ":")
+      
+      const ipCounts = {};
+      ips.forEach(ip => {
+        ipCounts[ip] = (ipCounts[ip] || 0) + 1;
+      });
+
+      // Filtrar IPs repetidos
+      const duplicates = Object.entries(ipCounts).filter(([ip, count]) => count > 1);
+
+      // Gerar resultado
+      const resultElement = document.getElementById('result');
+      if (duplicates.length > 0) {
+        resultElement.classList.remove('empty');
+        resultElement.textContent = 'IPs repetidos encontrados:\n' + 
+          duplicates.map(([ip, count]) => `${ip} (repetido ${count} vezes)`).join('\n');
+      } else {
+        resultElement.classList.add('empty');
+        resultElement.textContent = 'Nenhum IP repetido encontrado.';
+      }
+    }
+  </script>
+</body>
+</html>
